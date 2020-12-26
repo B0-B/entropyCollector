@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <div id="wrapper" style="height: 300px; width: 300px;">
+
+        <script>
+
+            // ---- draw client parameters ----
+            const gridLength = 30;
+            const backgroundColor = '#0d0d0d';
+            const hoverColors = ['#42f2f5'];
+            const decayTime = 3 // seconds
+            // --------------------------------
+
+            function delay(seconds) {
+                return new Promise(function(resolve) {
+                    setTimeout(function() {
+                        resolve(0);
+                    }, 1000*seconds);
+                });
+            }
+
+            function get (i, j) {return document.getElementById(`(${i}:${j})`)}
+
+            function randomHoverColor () {if (hoverColors.length > 1) {return hoverColors[Math.round(Math.random() * (hoverColors.length-1))]} else {return hoverColors[0]}}
+
+            async function frameRunner (delayTime) {
+                (async () => {for (let j = 0; j < gridLength; j++) {await blink(get(0, j), delayTime);}})();
+                (async () => {for (let i = 0; i < gridLength; i++) {await blink(get(i, gridLength-1), delayTime);}})();
+                (async () => {for (let j = 0; j < gridLength; j++) {await blink(get(gridLength-1, gridLength-1-j), delayTime);}})();
+                (async () => {for (let i = 0; i < gridLength; i++) {await blink(get(gridLength-1-i, 0), delayTime);}})();
+            }
+
+            async function highlight (elem) {
+                elem.style.transition = "none";
+                col = randomHoverColor();
+                elem.style.backgroundColor = col;
+                elem.style.opacity = "1.0";
+                elem.style.boxShadow = "0 0 30px 1px "+col;
+            }
+
+            async function off (elem) {
+                elem.style.transition = `${decayTime}s ease-out`;
+                elem.style.backgroundColor = backgroundColor;
+                elem.style.boxShadow = "0 0 0px 0px "+col;
+                elem.style.opacity = "0.0";
+            }
+
+            async function blink (elem, length) {
+                await highlight(elem);
+                await delay(length);
+                await off(elem);
+            }
+
+            // get parent node
+            var parentNode = document.currentScript.parentNode;
+            console.log('parent:', parentNode);
+
+            // create main frame element and layout it first
+            var main = document.createElement("div");
+            main.style.backgroundColor = backgroundColor;
+            main.style.position = "relative";
+            main.style.width = "100%";
+            main.style.height = "100%";
+            main.style.overflow = "hidden";
+            main.style.padding = "0";
+
+            // add the main frame to the parent node
+            parentNode.appendChild(main);
+
+            // create grid and add grid to main
+            var grid = document.createElement("span");
+            grid.style.width = "100%";
+            grid.style.height = "100%";
+            grid.style.display = "inline-block";
+            grid.style.position = "relative";
+            grid.style.fontSize = "0";
+            main.appendChild(grid);
+
+            // fill the grid
+            var cell, col;
+            const cellScale = `${100/gridLength}%`;
+            console.log('width', cellScale);
+            for (let i = 0; i < gridLength; i++) {
+                for (let j = 0; j < gridLength; j++) {
+                    // create cell
+                    cell = document.createElement("span");
+                    cell.id = `(${i}:${j})`;
+                    cell.style.display = "inline-block";
+                    cell.style.height = cellScale;
+                    cell.style.width = cellScale;
+                    cell.style.backgroundColor = backgroundColor;
+                    cell.style.borderRadius = "2px 2px 2px 2px";
+                    cell.onmouseover = function (event) {
+                        highlight(this);
+                    };
+                    cell.onmouseout = function (event) {
+                        off(this);
+                    };
+                    grid.appendChild(cell);
+                }
+            }
+
+            // load the script when the parentNode is loaded
+            document.onload = function() {frameRunner(0.7)};
+            
+        </script>
+
+    </div>
+</html>
