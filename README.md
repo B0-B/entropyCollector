@@ -1,2 +1,2 @@
 # entropyCollector
-Short embeddable script which collects entropy via mouse movements.
+Short embeddable script widget which collects entropy via mouse movements.
