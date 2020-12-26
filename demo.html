@@ -5,7 +5,7 @@
         <script>
 
             // ---- draw client parameters ----
-            const gridLength = 30;
+            const gridLength = 70;
             const backgroundColor = '#0d0d0d';
             const hoverColors = ['#42f2f5'];
             const decayTime = 3 // seconds
@@ -51,6 +51,13 @@
                 await off(elem);
             }
 
+            async function breathe (delayTime) {
+                (async () => {for (let j = 0; j < gridLength; j++) {blink(get(0, j), delayTime);}})();
+                (async () => {for (let i = 0; i < gridLength; i++) {blink(get(i, gridLength-1), delayTime);}})();
+                (async () => {for (let j = 0; j < gridLength; j++) {blink(get(gridLength-1, gridLength-1-j), delayTime);}})();
+                (async () => {for (let i = 0; i < gridLength; i++) {blink(get(gridLength-1-i, 0), delayTime);}})();
+            }
+
             // get parent node
             var parentNode = document.currentScript.parentNode;
             console.log('parent:', parentNode);
@@ -89,7 +96,7 @@
                     cell.style.height = cellScale;
                     cell.style.width = cellScale;
                     cell.style.backgroundColor = backgroundColor;
-                    cell.style.borderRadius = "2px 2px 2px 2px";
+                    cell.style.borderRadius = "20% 20% 20% 20%";
                     cell.onmouseover = function (event) {
                         highlight(this);
                     };
