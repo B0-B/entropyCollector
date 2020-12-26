@@ -5,11 +5,13 @@
         <script>
 
             // ---- draw client parameters ----
-            const gridLength = 70;
+            const gridLength = 30;
             const backgroundColor = '#0d0d0d';
-            const hoverColors = ['#42f2f5'];
+            const hoverColors = ['#42f2f5', '#03b6fc', '#00ffea', '#bef7e9'];
             const decayTime = 3 // seconds
             // --------------------------------
+
+
 
             function delay(seconds) {
                 return new Promise(function(resolve) {
@@ -51,11 +53,10 @@
                 await off(elem);
             }
 
-            async function breathe (delayTime) {
-                (async () => {for (let j = 0; j < gridLength; j++) {blink(get(0, j), delayTime);}})();
-                (async () => {for (let i = 0; i < gridLength; i++) {blink(get(i, gridLength-1), delayTime);}})();
-                (async () => {for (let j = 0; j < gridLength; j++) {blink(get(gridLength-1, gridLength-1-j), delayTime);}})();
-                (async () => {for (let i = 0; i < gridLength; i++) {blink(get(gridLength-1-i, 0), delayTime);}})();
+            async function blinkRandom (length) {
+                var x = Math.round(Math.random()*(gridLength-1));
+                var y = Math.round(Math.random()*(gridLength-1));
+                blink(get(x,y), length);
             }
 
             // get parent node
@@ -106,10 +107,7 @@
                     grid.appendChild(cell);
                 }
             }
-
-            // load the script when the parentNode is loaded
-            document.onload = function() {frameRunner(0.7)};
-            
+            frameRunner(0.001)
         </script>
 
     </div>
