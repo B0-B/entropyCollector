@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
-    <div id="wrapper" style="height: 300px; width: 300px;">
+<html style="background-color: #383838;">
+    <div id="wrapper" style="height: 1000px; width: 1000px;">
 
         <script>
 
             // ---- draw client parameters ----
-            const gridLength = 30;
+            const gridLength = 0;
             const backgroundColor = '#0d0d0d';
             const hoverColors = ['#42f2f5', '#03b6fc', '#00ffea', '#bef7e9'];
             const decayTime = 3 // seconds
@@ -59,6 +59,19 @@
                 blink(get(x,y), length);
             }
 
+            async function bringToLife () {
+                while (true) {
+                    await delay(0.05);
+                    if (!hoverStatus) {
+                        for (let i = 0; i<3;i++) {blinkRandom(); await delay(0.01)}
+                    }
+
+                }
+            }
+
+            // globals
+            var hoverStatus = false;
+
             // get parent node
             var parentNode = document.currentScript.parentNode;
             console.log('parent:', parentNode);
@@ -99,15 +112,19 @@
                     cell.style.backgroundColor = backgroundColor;
                     cell.style.borderRadius = "20% 20% 20% 20%";
                     cell.onmouseover = function (event) {
+                        hoverStatus = true;
                         highlight(this);
                     };
                     cell.onmouseout = function (event) {
+                        hoverStatus = false;
                         off(this);
                     };
                     grid.appendChild(cell);
                 }
             }
-            frameRunner(0.001)
+
+            // start loops
+            bringToLife();
         </script>
 
     </div>
