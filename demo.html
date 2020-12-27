@@ -2,7 +2,7 @@
 <html style="background-color: #383838;">
     <div id="wrapper" style="height: 400px; width: 400px;">
         <script>
-            // ---- draw client parameters ----
+            // ------ WIDGET PARAMETERS ------
             const gridLength = 20;
             const backgroundColor = '#0d0d0d';
             const hoverColors = ['#e6e600', '#ffff80', '#ffe066'];
@@ -12,8 +12,6 @@
             const menuHeight = 10 // percent
             const glowRadius = 10 // px
             // --------------------------------
-
-            // ---- methods ----
             function u(){return Math.random()}function delay(seconds){return new Promise(function(resolve){setTimeout(function(){resolve(0)}, 1000*seconds)});}function get(i,j){return document.getElementById(`(${i}:${j})`)}
             function randomHoverColor(){if(hoverColors.length>1){return hoverColors[Math.round(u()*(hoverColors.length-1))]}else{return hoverColors[0]}}async function highlight(elem){try{elem.style.transition = "none";col = 
             randomHoverColor();elem.style.backgroundColor=col;elem.style.opacity="1.0";elem.style.boxShadow=`0 0 ${glowRadius}px ${Math.round(glowRadius/10)}px `+col;await delay(0.2*decayTime);}catch(e){/**/}}async function 
