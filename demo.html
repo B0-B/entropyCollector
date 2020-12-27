@@ -5,12 +5,16 @@
         <script>
 
             // ---- draw client parameters ----
-            const gridLength = 50;
+            const gridLength = 20;
             const backgroundColor = '#0d0d0d';
-            const hoverColors = ['#42f2f5', '#03b6fc', '#00ffea', '#bef7e9'];
+            const hoverColors = ['#e6e600', '#ffff80', '#ffe066'];
             const decayTime = 3 // seconds
+            const cornerRadius = 15 // percent
+            const menuHeight = 10 // percent
+            const glowRadius = 10 // px
             // --------------------------------
 
+            // ---- methods ----
             function u () {return Math.random()}
 
             function delay(seconds) {
@@ -36,14 +40,16 @@
                 elem.style.transition = "none";
                 col = randomHoverColor();
                 elem.style.backgroundColor = col;
+                
                 elem.style.opacity = "1.0";
-                elem.style.boxShadow = "0 0 30px 1px "+col;
+                elem.style.boxShadow = `0 0 ${glowRadius}px ${Math.round(glowRadius/10)}px `+col;
+                await delay(0.2 * decayTime);
             }
 
             async function off (elem) {
                 elem.style.transition = `${decayTime}s ease-out`;
-                elem.style.backgroundColor = backgroundColor;
-                elem.style.boxShadow = "0 0 0px 0px "+col;
+                //elem.style.backgroundColor = backgroundColor;
+                //elem.style.boxShadow = "0 0 0px 0px "+col;
                 elem.style.opacity = "0.0";
             }
 
@@ -68,7 +74,8 @@
 
                 }
             }
-
+            // -----------------
+            
             // globals
             var hoverStatus = false;
 
@@ -90,14 +97,12 @@
             main.style.backgroundColor = backgroundColor;
             main.style.position = "relative";
             main.style.width = "100%";
-            main.style.height = "100%";
+            main.style.height = `${100-menuHeight}%`;
             main.style.overflow = "hidden";
             main.style.padding = "0";
 
             // add the main frame to the parent node
             container.appendChild(main);
-
-
 
             // create grid and add grid to main
             var grid = document.createElement("span");
@@ -110,9 +115,8 @@
 
             // fill the grid
             var cell, col;
-            const cellScale = `${100/gridLength}%`;
-            console.log('width', cellScale);
-            for (let i = 0; i < gridLength; i++) {
+            const cellScale = `${parseFloat(parentNode.style.width)/gridLength}px`;
+            for (let i = 0; i < Math.round(gridLength*(100-menuHeight)/100); i++) {
                 for (let j = 0; j < gridLength; j++) {
                     // create cell
                     cell = document.createElement("span");
@@ -120,8 +124,7 @@
                     cell.style.display = "inline-block";
                     cell.style.height = cellScale;
                     cell.style.width = cellScale;
-                    cell.style.backgroundColor = backgroundColor;
-                    cell.style.borderRadius = "20% 20% 20% 20%";
+                    cell.style.borderRadius = `${cornerRadius}% ${cornerRadius}% ${cornerRadius}% ${cornerRadius}%`;
                     cell.onmouseover = function (event) {
                         hoverStatus = true;
                         highlight(this);
@@ -136,9 +139,11 @@
 
             // create menu
             var menu = document.createElement("div");
-            main.appendChild(menu);
+            container.appendChild(menu);
+            menu.style.position = "relative";
             menu.style.width = "100%";
-            menu.style.height = 
+            menu.style.height = `${menuHeight}%`;
+            menu.style.backgroundColor = backgroundColor;
             
 
             // start loops
