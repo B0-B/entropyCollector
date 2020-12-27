@@ -107,7 +107,7 @@
             }
 
             function resetSize () {
-                entropy = [];
+                entropy.length = 0;
                 document.getElementById('b').innerHTML = `0 Bytes`;
             }
             
@@ -239,11 +239,12 @@
                 }
             }
 
-            
-            
-
             // start loops
             bringToLife();
+
+            // remove script
+            parentNode.removeChild(parentNode.children[0]);
+            
         </script>
 
     </div>
