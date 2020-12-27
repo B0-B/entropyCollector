@@ -228,7 +228,7 @@
                     cell.onmouseover = function (event) {
                         hoverStatus = true;
                         highlight(this);
-                        entropy.push(i*gridLength + j + 1) // save the total number
+                        entropy.push([i,j]) // save the total number
                         refreshSize();
                     };
                     cell.onmouseout = function (event) {
