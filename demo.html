@@ -34,7 +34,7 @@
             .style.color=fontColor};menu.appendChild(element)});var cell,col;const cellScale=`${parseFloat(parentNode.style.width)/gridLength}px`;for(let i=0;i<Math.round(gridLength*(100-menuHeight)/100);i++){for (let j=0;j
             <gridLength;j++){cell=document.createElement("span");cell.id=`(${i}:${j})`;cell.style.display="inline-block";cell.style.height=cellScale;cell.style.width=cellScale;cell.style.borderRadius=`${radius}% ${radius}% 
             ${radius}% ${radius}%`;cell.onmouseover=function(event){hoverStatus=true;highlight(this);entropy.push([i,j]);refshSize()};cell.onmouseout=function(event){hoverStatus=false;off(this)};grid.appendChild(cell)}}/**/
-            bringToLife();parentNode.removeChild(parentNode.children[0]);/*BUFFER ############################################################################################################## https://github.com/B0-B © 2020
+            bringToLife();parentNode.removeChild(parentNode.children[0]);/*BUFFER ########################################################################################################### https://github.com/B0-B © 2020 */
         </script>
     </div>
 </html>
