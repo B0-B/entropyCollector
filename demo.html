@@ -8,6 +8,7 @@
             const gridLength = 20;
             const backgroundColor = '#0d0d0d';
             const hoverColors = ['#e6e600', '#ffff80', '#ffe066'];
+            const fontColor = '#fff';
             const decayTime = 3 // seconds
             const cornerRadius = 15 // percent
             const menuHeight = 10 // percent
@@ -28,6 +29,13 @@
             function get (i, j) {return document.getElementById(`(${i}:${j})`)}
 
             function randomHoverColor () {if (hoverColors.length > 1) {return hoverColors[Math.round(u() * (hoverColors.length-1))]} else {return hoverColors[0]}}
+
+            function ascii (i, j) {
+                // returns specific ascii depending on the coordinates
+                const u = (i*gridLength + j + 1) / (gridLength**2*(1-menuHeight/100));
+                const asciiNum = Math.round(255*u);
+                return 
+            }
 
             async function frameRunner (delayTime) {
                 (async () => {for (let j = 0; j < gridLength; j++) {await blink(get(0, j), delayTime);}})();
@@ -74,10 +82,24 @@
 
                 }
             }
+
+            function refreshSize () {
+                if (entropy.length > 1000) {
+                    document.getElementById('b').innerHTML = `${entropy.length/1000} kB`
+                } else {
+                    document.getElementById('b').innerHTML = `${entropy.length} Bytes`
+                }
+            }
+
+            function resetSize () {
+                entropy = [];
+                document.getElementById('b').innerHTML = `0 Bytes`;
+            }
             // -----------------
-            
+
             // globals
             var hoverStatus = false;
+            var entropy = [];
 
             // get parent node
             var parentNode = document.currentScript.parentNode;
@@ -113,6 +135,42 @@
             grid.style.fontSize = "0";
             main.appendChild(grid);
 
+            // create menu
+            var menu = document.createElement("div");
+            container.appendChild(menu);
+            menu.style.position = "relative";
+            //menu.style.overflow = "hidden";
+            menu.style.width = "100%";
+            menu.style.height = `${menuHeight}%`;
+            menu.style.backgroundColor = backgroundColor;
+            ["b", "r", "c"].forEach(elem => {
+                var element;
+                element = document.createElement("button"); element.style.textDecoration = "none"; element.style.border = "none"
+                element.style.position = "relative";
+                element.style.height = "100%";
+                element.style.backgroundColor = backgroundColor;
+                element.style.width = "33.33%";
+                element.style.color = fontColor;
+                element.style.display = "inline-block";
+                element.id = elem;
+                if (elem == "r") {
+                    element.innerHTML = "reset";
+                    element.onclick = "refreshSize";
+                } else if (elem == "c") {
+                    element.innerHTML = "copy";
+                } else if (elem == "b") {
+                    element.innerHTML = "0 Bytes";
+                    element.disabled = true;
+                }
+                element.onmouseover = function (event) {
+                    this.style.color = randomHoverColor();
+                };
+                element.onmouseout = function (event) {
+                    this.style.color = fontColor;
+                };
+                menu.appendChild(element);
+            });
+
             // fill the grid
             var cell, col;
             const cellScale = `${parseFloat(parentNode.style.width)/gridLength}px`;
@@ -128,6 +186,8 @@
                     cell.onmouseover = function (event) {
                         hoverStatus = true;
                         highlight(this);
+                        entropy.push(i*gridLength + j + 1) // save the total number
+                        refreshSize();
                     };
                     cell.onmouseout = function (event) {
                         hoverStatus = false;
@@ -137,13 +197,7 @@
                 }
             }
 
-            // create menu
-            var menu = document.createElement("div");
-            container.appendChild(menu);
-            menu.style.position = "relative";
-            menu.style.width = "100%";
-            menu.style.height = `${menuHeight}%`;
-            menu.style.backgroundColor = backgroundColor;
+            
             
 
             // start loops
