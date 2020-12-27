@@ -1,8 +1,17 @@
 # entropyCollector
 Embeddable web widget that collects user entropy using mouse movements. Further this widget provides the generated random string/seed as a direct clipboard copy.
 
+
+## Features
+- Neat look!
+- No dependencies
+- Vanilla html/js injection
+- Direct, private and "quasi-true"-random numbers
+- Seed is an 8 bit number sequence
+
 ## Implementation
-Copy the script below and paste it within the tags of the desired container (parent). 
+Copy the script below and paste it within the tags of the desired container (parent). The widget is customizable by it's preambling parameters:
+
 
 ```html
 <!-- Embeddable Widget -->
@@ -42,5 +51,21 @@ Copy the script below and paste it within the tags of the desired container (par
 <!----------------------->
 ```
 
+The script will generate the widget according to it's parent element's geometry - make sure that the parent's width and height match to get a square shape. Your final web page might look like this:
 
-The script will generate the widget according to it's parents geometry - make sure that the parent's width and height match to get a square shape.
+```html
+<!DOCTYPE html>
+<html style="background-color: #383838;">
+    <head>
+    </head>
+    <body>
+        <div id="parent" style="height: 400px; width: 400px;">
+            <!-- Embeddable Widget -->
+            <script>
+                ...
+            </script>
+            <!----------------------->
+        </div>
+    </body>
+</html>
+```
