@@ -10,7 +10,7 @@ Embeddable web widget that collects user entropy using mouse movements. Further 
 - Seed is an 8 bit number sequence
 
 ## Implementation
-Copy the script below and paste it within the tags of the desired container (parent). The widget is customizable by it's preambling parameters:
+Copy the script below and paste it within the tags of the desired container (parent). For customizations tune the preliminary widget parameters:
 
 
 ```html
