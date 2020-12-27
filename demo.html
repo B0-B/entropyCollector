@@ -30,7 +30,7 @@
 
             function randomHoverColor () {if (hoverColors.length > 1) {return hoverColors[Math.round(u() * (hoverColors.length-1))]} else {return hoverColors[0]}}
 
-            function ascii (i, j) {
+            function ascii (num) {
                 // returns specific ascii depending on the coordinates
                 const u = (i*gridLength + j + 1) / (gridLength**2*(1-menuHeight/100));
                 const asciiNum = Math.round(255*u);
@@ -45,20 +45,30 @@
             }
 
             async function highlight (elem) {
-                elem.style.transition = "none";
-                col = randomHoverColor();
-                elem.style.backgroundColor = col;
+                try {
+                    elem.style.transition = "none";
+                    col = randomHoverColor();
+                    elem.style.backgroundColor = col;
+                    
+                    elem.style.opacity = "1.0";
+                    elem.style.boxShadow = `0 0 ${glowRadius}px ${Math.round(glowRadius/10)}px `+col;
+                    await delay(0.2 * decayTime);
+                } catch (error) {
+                    //
+                }
                 
-                elem.style.opacity = "1.0";
-                elem.style.boxShadow = `0 0 ${glowRadius}px ${Math.round(glowRadius/10)}px `+col;
-                await delay(0.2 * decayTime);
             }
 
             async function off (elem) {
-                elem.style.transition = `${decayTime}s ease-out`;
-                //elem.style.backgroundColor = backgroundColor;
-                //elem.style.boxShadow = "0 0 0px 0px "+col;
-                elem.style.opacity = "0.0";
+                try {
+                    elem.style.transition = `${decayTime}s ease-out`;
+                    //elem.style.backgroundColor = backgroundColor;
+                    //elem.style.boxShadow = "0 0 0px 0px "+col;
+                    elem.style.opacity = "0.0";
+                } catch (error) {
+                    //
+                }
+                
             }
 
             async function blink (elem, length) {
@@ -68,9 +78,14 @@
             }
 
             async function blinkRandom (length) {
-                var x = Math.round(u()*(gridLength-1));
-                var y = Math.round(u()*(gridLength-1));
-                blink(get(x,y), length);
+                try {
+                    var x = Math.round(u()*(gridLength-1));
+                    var y = Math.round(u()*(Math.round(gridLength-1)*(1-menuHeight/100)));
+                    blink(get(x,y), length);
+                } catch (error) {
+                    //
+                }
+                
             }
 
             async function bringToLife () {
@@ -94,6 +109,32 @@
             function resetSize () {
                 entropy = [];
                 document.getElementById('b').innerHTML = `0 Bytes`;
+            }
+            
+            function copyPayLoad () {
+                // draw the entropy and add to clipboard
+                var string = ''; var momentum, uniqueValue, totalDistance, ranAscii;
+                var out = [];
+                for (let i = 0; i < entropy.length; i++) {
+                    const pair = entropy[i];
+                    if (i == 0) {
+                        momentum = 1;
+                    } else {
+                        momentum = (entropy[i][0] - entropy[i-1][0])**2 + (entropy[i][1] - entropy[i-1][1])**2
+                    }
+                    uniqueValue = ((entropy[i][0]*gridLength + entropy[i][1] + 1));
+                    totalDistance = (entropy[i][0]**2 + entropy[i][0]**2);
+                    ranAscii = (momentum * uniqueValue * totalDistance) % 255;
+                    out.push(ranAscii.toString());
+
+                }
+                out = out.join(' ');
+                navigator.clipboard.writeText(out).then(async function() {
+                    console.log(out)
+                    document.getElementById('c').innerHTML = `copied!`;
+                    await delay(3);
+                    document.getElementById('c').innerHTML = `copy`;
+                });
             }
             // -----------------
 
@@ -155,9 +196,10 @@
                 element.id = elem;
                 if (elem == "r") {
                     element.innerHTML = "reset";
-                    element.onclick = "refreshSize";
+                    element.onclick = resetSize;
                 } else if (elem == "c") {
                     element.innerHTML = "copy";
+                    element.onclick = copyPayLoad;
                 } else if (elem == "b") {
                     element.innerHTML = "0 Bytes";
                     element.disabled = true;
