@@ -51,7 +51,7 @@ Copy the script below and paste it within the tags of the desired container (par
 <!----------------------->
 ```
 
-The script will generate the widget according to it's parent element's geometry - make sure that the parent's width and height match to get a square shape. Your final web page might look like this:
+The script will render the widget according to it's parent geometry - make sure that the parent's width and height match to get a square shape. Your final web page might look like this:
 
 ```html
 <!DOCTYPE html>
