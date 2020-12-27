@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html style="background-color: #383838;">
-    <div id="wrapper" style="height: 1000px; width: 1000px;">
+    <div id="wrapper" style="height: 400px; width: 400px;">
 
         <script>
 
             // ---- draw client parameters ----
-            const gridLength = 100;
+            const gridLength = 50;
             const backgroundColor = '#0d0d0d';
             const hoverColors = ['#42f2f5', '#03b6fc', '#00ffea', '#bef7e9'];
             const decayTime = 3 // seconds
             // --------------------------------
 
-
+            function u () {return Math.random()}
 
             function delay(seconds) {
                 return new Promise(function(resolve) {
@@ -23,7 +23,7 @@
 
             function get (i, j) {return document.getElementById(`(${i}:${j})`)}
 
-            function randomHoverColor () {if (hoverColors.length > 1) {return hoverColors[Math.round(Math.random() * (hoverColors.length-1))]} else {return hoverColors[0]}}
+            function randomHoverColor () {if (hoverColors.length > 1) {return hoverColors[Math.round(u() * (hoverColors.length-1))]} else {return hoverColors[0]}}
 
             async function frameRunner (delayTime) {
                 (async () => {for (let j = 0; j < gridLength; j++) {await blink(get(0, j), delayTime);}})();
@@ -54,16 +54,16 @@
             }
 
             async function blinkRandom (length) {
-                var x = Math.round(Math.random()*(gridLength-1));
-                var y = Math.round(Math.random()*(gridLength-1));
+                var x = Math.round(u()*(gridLength-1));
+                var y = Math.round(u()*(gridLength-1));
                 blink(get(x,y), length);
             }
 
             async function bringToLife () {
                 while (true) {
-                    await delay(1*Math.random());
+                    await delay(0.5*u());
                     if (!hoverStatus) {
-                        for (let i = 0; i<8;i++) {blinkRandom(); await delay(0.05*Math.random())}
+                        for (let i = 0; i<Math.round(10*u());i++) {blinkRandom(); await delay(0.05*u())}
                     }
 
                 }
@@ -76,6 +76,15 @@
             var parentNode = document.currentScript.parentNode;
             console.log('parent:', parentNode);
 
+            // container
+            var container = document.createElement("div");
+            container.style.position = "relative";
+            container.style.width = "100%";
+            container.style.height = "100%";
+
+            // add the main frame to the parent node
+            parentNode.appendChild(container);
+
             // create main frame element and layout it first
             var main = document.createElement("div");
             main.style.backgroundColor = backgroundColor;
@@ -86,7 +95,9 @@
             main.style.padding = "0";
 
             // add the main frame to the parent node
-            parentNode.appendChild(main);
+            container.appendChild(main);
+
+
 
             // create grid and add grid to main
             var grid = document.createElement("span");
@@ -122,6 +133,13 @@
                     grid.appendChild(cell);
                 }
             }
+
+            // create menu
+            var menu = document.createElement("div");
+            main.appendChild(menu);
+            menu.style.width = "100%";
+            menu.style.height = 
+            
 
             // start loops
             bringToLife();
