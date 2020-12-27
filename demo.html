@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html style="background-color: #383838;">
     <div id="wrapper" style="height: 400px; width: 400px;">
+        <!-- Embeddable Widget -->
         <script>
             // ------ WIDGET PARAMETERS ------
             const gridLength = 20;
@@ -34,5 +35,6 @@
             ${radius}% ${radius}%`;cell.onmouseover=function(event){hoverStatus=true;highlight(this);entropy.push([i,j]);refshSize()};cell.onmouseout=function(event){hoverStatus=false;off(this)};grid.appendChild(cell)}}/**/
             bringToLife();parentNode.removeChild(parentNode.children[0]);/*BUFFER ########################################################################################################### https://github.com/B0-B © 2020 */
         </script>
+        <!----------------------->
     </div>
 </html>
