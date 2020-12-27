@@ -1,251 +1,40 @@
 <!DOCTYPE html>
 <html style="background-color: #383838;">
     <div id="wrapper" style="height: 400px; width: 400px;">
-
         <script>
-
             // ---- draw client parameters ----
             const gridLength = 20;
             const backgroundColor = '#0d0d0d';
             const hoverColors = ['#e6e600', '#ffff80', '#ffe066'];
             const fontColor = '#fff';
             const decayTime = 3 // seconds
-            const cornerRadius = 15 // percent
+            const radius = 15 // percent
             const menuHeight = 10 // percent
             const glowRadius = 10 // px
             // --------------------------------
 
             // ---- methods ----
-            function u () {return Math.random()}
-
-            function delay(seconds) {
-                return new Promise(function(resolve) {
-                    setTimeout(function() {
-                        resolve(0);
-                    }, 1000*seconds);
-                });
-            }
-
-            function get (i, j) {return document.getElementById(`(${i}:${j})`)}
-
-            function randomHoverColor () {if (hoverColors.length > 1) {return hoverColors[Math.round(u() * (hoverColors.length-1))]} else {return hoverColors[0]}}
-
-            function ascii (num) {
-                // returns specific ascii depending on the coordinates
-                const u = (i*gridLength + j + 1) / (gridLength**2*(1-menuHeight/100));
-                const asciiNum = Math.round(255*u);
-                return 
-            }
-
-            async function frameRunner (delayTime) {
-                (async () => {for (let j = 0; j < gridLength; j++) {await blink(get(0, j), delayTime);}})();
-                (async () => {for (let i = 0; i < gridLength; i++) {await blink(get(i, gridLength-1), delayTime);}})();
-                (async () => {for (let j = 0; j < gridLength; j++) {await blink(get(gridLength-1, gridLength-1-j), delayTime);}})();
-                (async () => {for (let i = 0; i < gridLength; i++) {await blink(get(gridLength-1-i, 0), delayTime);}})();
-            }
-
-            async function highlight (elem) {
-                try {
-                    elem.style.transition = "none";
-                    col = randomHoverColor();
-                    elem.style.backgroundColor = col;
-                    
-                    elem.style.opacity = "1.0";
-                    elem.style.boxShadow = `0 0 ${glowRadius}px ${Math.round(glowRadius/10)}px `+col;
-                    await delay(0.2 * decayTime);
-                } catch (error) {
-                    //
-                }
-                
-            }
-
-            async function off (elem) {
-                try {
-                    elem.style.transition = `${decayTime}s ease-out`;
-                    //elem.style.backgroundColor = backgroundColor;
-                    //elem.style.boxShadow = "0 0 0px 0px "+col;
-                    elem.style.opacity = "0.0";
-                } catch (error) {
-                    //
-                }
-                
-            }
-
-            async function blink (elem, length) {
-                await highlight(elem);
-                await delay(length);
-                await off(elem);
-            }
-
-            async function blinkRandom (length) {
-                try {
-                    var x = Math.round(u()*(gridLength-1));
-                    var y = Math.round(u()*(Math.round(gridLength-1)*(1-menuHeight/100)));
-                    blink(get(x,y), length);
-                } catch (error) {
-                    //
-                }
-                
-            }
-
-            async function bringToLife () {
-                while (true) {
-                    await delay(0.5*u());
-                    if (!hoverStatus) {
-                        for (let i = 0; i<Math.round(10*u());i++) {blinkRandom(); await delay(0.05*u())}
-                    }
-
-                }
-            }
-
-            function refreshSize () {
-                if (entropy.length > 1000) {
-                    document.getElementById('b').innerHTML = `${entropy.length/1000} kB`
-                } else {
-                    document.getElementById('b').innerHTML = `${entropy.length} Bytes`
-                }
-            }
-
-            function resetSize () {
-                entropy.length = 0;
-                document.getElementById('b').innerHTML = `0 Bytes`;
-            }
-            
-            function copyPayLoad () {
-                // draw the entropy and add to clipboard
-                var string = ''; var momentum, uniqueValue, totalDistance, ranAscii;
-                var out = [];
-                for (let i = 0; i < entropy.length; i++) {
-                    const pair = entropy[i];
-                    if (i == 0) {
-                        momentum = 1;
-                    } else {
-                        momentum = (entropy[i][0] - entropy[i-1][0])**2 + (entropy[i][1] - entropy[i-1][1])**2
-                    }
-                    uniqueValue = ((entropy[i][0]*gridLength + entropy[i][1] + 1));
-                    totalDistance = (entropy[i][0]**2 + entropy[i][0]**2);
-                    ranAscii = (momentum * uniqueValue * totalDistance) % 255;
-                    out.push(ranAscii.toString());
-
-                }
-                out = out.join(' ');
-                navigator.clipboard.writeText(out).then(async function() {
-                    console.log(out)
-                    document.getElementById('c').innerHTML = `copied!`;
-                    await delay(3);
-                    document.getElementById('c').innerHTML = `copy`;
-                });
-            }
-            // -----------------
-
-            // globals
-            var hoverStatus = false;
-            var entropy = [];
-
-            // get parent node
-            var parentNode = document.currentScript.parentNode;
-            console.log('parent:', parentNode);
-
-            // container
-            var container = document.createElement("div");
-            container.style.position = "relative";
-            container.style.width = "100%";
-            container.style.height = "100%";
-
-            // add the main frame to the parent node
-            parentNode.appendChild(container);
-
-            // create main frame element and layout it first
-            var main = document.createElement("div");
-            main.style.backgroundColor = backgroundColor;
-            main.style.position = "relative";
-            main.style.width = "100%";
-            main.style.height = `${100-menuHeight}%`;
-            main.style.overflow = "hidden";
-            main.style.padding = "0";
-
-            // add the main frame to the parent node
-            container.appendChild(main);
-
-            // create grid and add grid to main
-            var grid = document.createElement("span");
-            grid.style.width = "100%";
-            grid.style.height = "100%";
-            grid.style.display = "inline-block";
-            grid.style.position = "relative";
-            grid.style.fontSize = "0";
-            main.appendChild(grid);
-
-            // create menu
-            var menu = document.createElement("div");
-            container.appendChild(menu);
-            menu.style.position = "relative";
-            //menu.style.overflow = "hidden";
-            menu.style.width = "100%";
-            menu.style.height = `${menuHeight}%`;
-            menu.style.backgroundColor = backgroundColor;
-            ["b", "r", "c"].forEach(elem => {
-                var element;
-                element = document.createElement("button"); element.style.textDecoration = "none"; element.style.border = "none"
-                element.style.position = "relative";
-                element.style.height = "100%";
-                element.style.backgroundColor = backgroundColor;
-                element.style.width = "33.33%";
-                element.style.color = fontColor;
-                element.style.display = "inline-block";
-                element.id = elem;
-                if (elem == "r") {
-                    element.innerHTML = "reset";
-                    element.onclick = resetSize;
-                } else if (elem == "c") {
-                    element.innerHTML = "copy";
-                    element.onclick = copyPayLoad;
-                } else if (elem == "b") {
-                    element.innerHTML = "0 Bytes";
-                    element.disabled = true;
-                }
-                element.onmouseover = function (event) {
-                    this.style.color = randomHoverColor();
-                };
-                element.onmouseout = function (event) {
-                    this.style.color = fontColor;
-                };
-                menu.appendChild(element);
-            });
-
-            // fill the grid
-            var cell, col;
-            const cellScale = `${parseFloat(parentNode.style.width)/gridLength}px`;
-            for (let i = 0; i < Math.round(gridLength*(100-menuHeight)/100); i++) {
-                for (let j = 0; j < gridLength; j++) {
-                    // create cell
-                    cell = document.createElement("span");
-                    cell.id = `(${i}:${j})`;
-                    cell.style.display = "inline-block";
-                    cell.style.height = cellScale;
-                    cell.style.width = cellScale;
-                    cell.style.borderRadius = `${cornerRadius}% ${cornerRadius}% ${cornerRadius}% ${cornerRadius}%`;
-                    cell.onmouseover = function (event) {
-                        hoverStatus = true;
-                        highlight(this);
-                        entropy.push([i,j]) // save the total number
-                        refreshSize();
-                    };
-                    cell.onmouseout = function (event) {
-                        hoverStatus = false;
-                        off(this);
-                    };
-                    grid.appendChild(cell);
-                }
-            }
-
-            // start loops
-            bringToLife();
-
-            // remove script
-            parentNode.removeChild(parentNode.children[0]);
-            
+            function u(){return Math.random()}function delay(seconds){return new Promise(function(resolve){setTimeout(function(){resolve(0)}, 1000*seconds)});}function get(i,j){return document.getElementById(`(${i}:${j})`)}
+            function randomHoverColor(){if(hoverColors.length>1){return hoverColors[Math.round(u()*(hoverColors.length-1))]}else{return hoverColors[0]}}async function highlight(elem){try{elem.style.transition = "none";col = 
+            randomHoverColor();elem.style.backgroundColor=col;elem.style.opacity="1.0";elem.style.boxShadow=`0 0 ${glowRadius}px ${Math.round(glowRadius/10)}px `+col;await delay(0.2*decayTime);}catch(e){/**/}}async function 
+            off(elem){try{elem.style.transition=`${decayTime}s ease-out`;elem.style.opacity="0.0"}catch(e){/**/}}async function blink(elem,length){await highlight(elem);await delay(length);await off(elem)}async function blr 
+            (length){try{var x=Math.round(u()*(gridLength-1));var y=Math.round(u()*(Math.round(gridLength-1)*(1-menuHeight/100)));blink(get(x,y),length);}catch(e){/**/}}async function bringToLife(){while(true){await delay(1
+            /2*u());if(!hoverStatus){for(let i=0;i<Math.round(10*u());i++){blr();await delay(0.05*u())}}}}function refshSize(){if(entropy.length>1000){document.getElementById('b').innerHTML=`${entropy.length/1000} kB`} else
+            {document.getElementById('b').innerHTML=`${entropy.length} Bytes`}}function resetSize(){entropy.length=0;document.getElementById('b').innerHTML=`0 Bytes`;}function copyPayLoad(){var momentum,ranAscii,uniqueValue
+            ,totalDistance;var out=[];for(let i=0;i<entropy.length;i++){const pair=entropy[i];if(i==0){momentum=1}else{momentum=(entropy[i][0]-entropy[i-1][0])**2+(entropy[i][1]-entropy[i-1][1])**2}uniqueValue=((entropy[i][
+            0]*gridLength+entropy[i][1]+1));totalDistance=(entropy[i][0]**2+entropy[i][0]**2);ranAscii=(momentum*uniqueValue*totalDistance)%255;out.push(ranAscii.toString())}out = out.join(' ');navigator.clipboard.writeText
+            (out).then((async()=>{document.getElementById('c').innerHTML=`copied!`;await delay(3);document.getElementById('c').innerHTML=`copy`}));}var hoverStatus=false;var entropy=[];var parentNode=document.currentScript.
+            parentNode;var container=document.createElement("div");container.style.position="relative";container.style.width="100%";container.style.height="100.%";var main=document.createElement("div");main.style.background
+            =backgroundColor;main.style.position="relative";main.style.width="100.0%";main.style.height=`${100-menuHeight}%`;main.style.overflow="hidden";main.style.padding="0.0";parentNode.appendChild(container);container.
+            appendChild(main);var grid=document.createElement("span");grid.style.width="100.0%";grid.style.height="100.0%";grid.style.display="inline-block";grid.style.fontSize="0.0";main.appendChild(grid);var menu=document
+            .createElement("div");container.appendChild(menu);menu.style.width="100.0%";menu.style.height=`${menuHeight}%`;menu.style.backgroundColor=backgroundColor;["b","r","c"].forEach(elem=>{var element;element=document
+            .createElement("button");element.style.textDecoration="none";element.style.border="none";element.style.position="relative";element.style.height="100%";element.style.backgroundColor=backgroundColor;element.style.
+            width="33.33%";element.style.color=fontColor;element.style.display="inline-block";element.id=elem;if(elem=="r"){element.innerHTML="reset";element.onclick=resetSize;}else if(elem=="c"){element.innerHTML="copy"/**
+            */element.onclick=copyPayLoad}else if(elem=="b"){element.innerHTML="0 Bytes";element.disabled=true}element.onmouseover=function(event){this.style.color=randomHoverColor()};element.onmouseout=function(event){this
+            .style.color=fontColor};menu.appendChild(element)});var cell,col;const cellScale=`${parseFloat(parentNode.style.width)/gridLength}px`;for(let i=0;i<Math.round(gridLength*(100-menuHeight)/100);i++){for (let j=0;j
+            <gridLength;j++){cell=document.createElement("span");cell.id=`(${i}:${j})`;cell.style.display="inline-block";cell.style.height=cellScale;cell.style.width=cellScale;cell.style.borderRadius=`${radius}% ${radius}% 
+            ${radius}% ${radius}%`;cell.onmouseover=function(event){hoverStatus=true;highlight(this);entropy.push([i,j]);refshSize()};cell.onmouseout=function(event){hoverStatus=false;off(this)};grid.appendChild(cell)}}/**/
+            bringToLife();parentNode.removeChild(parentNode.children[0]);/*BUFFER ############################################################################################################## https://github.com/B0-B © 2020
         </script>
-
     </div>
 </html>
