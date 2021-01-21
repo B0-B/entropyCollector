@@ -6,7 +6,7 @@ Embeddable web widget that collects user entropy using mouse movements. Further 
 - Neat look!
 - No dependencies
 - Vanilla html/js injection
-- Direct, private and "quasi-true"-random numbers
+- Direct, private and pseudo-random numbers
 - Seed is an 8 bit number sequence
 
 ## Implementation
